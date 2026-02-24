@@ -265,14 +265,23 @@ func main() {
 			limit, _ := cmd.Flags().GetInt("limit")
 			containerTag, _ := cmd.Flags().GetString("containerTag")
 			chunkThresh, _ := cmd.Flags().GetFloat64("chunkThreshold")
+			useV4, _ := cmd.Flags().GetBool("v4")
 			payload := map[string]interface{}{"q": query, "limit": limit}
-			if containerTag != "" {
+			if useV4 && containerTag != "" {
+				payload["containerTag"] = containerTag
+			} else if containerTag != "" {
 				payload["containerTags"] = []string{containerTag}
 			}
 			if chunkThresh > 0 {
 				payload["chunkThreshold"] = chunkThresh
 			}
-			resp, err := client.Post("/v3/search", payload)
+			var endpoint string
+			if useV4 {
+				endpoint = "/v4/search"
+			} else {
+				endpoint = "/v3/search"
+			}
+			resp, err := client.Post(endpoint, payload)
 			if err != nil {
 				return err
 			}
@@ -284,6 +293,7 @@ func main() {
 		},
 	}
 	searchDocsCmd.Flags().Int("limit", 10, "Max results")
+	searchDocsCmd.Flags().Bool("v4", false, "Use v4 API (recommended)")
 	searchDocsCmd.Flags().String("containerTag", "", "Container tag filter")
 	searchDocsCmd.Flags().Float64("chunkThreshold", 0, "Chunk selection sensitivity (0-1)")
 	searchCmd.AddCommand(searchDocsCmd)
