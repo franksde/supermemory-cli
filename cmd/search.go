@@ -10,8 +10,12 @@ import (
 )
 
 func truncateString(s string, maxLen int) string {
-	if maxLen > 0 && len(s) > maxLen {
-		return s[:maxLen] + "..."
+	if maxLen <= 0 {
+		return s
+	}
+	runes := []rune(s)
+	if len(runes) > maxLen {
+		return string(runes[:maxLen]) + "..."
 	}
 	return s
 }
