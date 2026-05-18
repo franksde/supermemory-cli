@@ -1,75 +1,125 @@
-# Supermemory CLI
+# `sm` — Blazing-fast Supermemory CLI for AI Agents
 
-A Go CLI for the Supermemory API. Supports document ingestion (single/batch), conversation archiving, search, and container tag management.
+> Forked from [shaoyanji/supermemory-cli](https://github.com/shaoyanji/supermemory-cli)
 
-## Build
+Give your AI agents (Claude Code, Codex, Gemini CLI, etc.) free, persistent memory across sessions — powered by the [Supermemory](https://supermemory.ai) API.
 
-```bash
-go build -o supermemory ./main.go
-```
+## Why?
 
-## Install
+The official Supermemory plugins require a **Pro plan**. The API free tier is generous enough for personal agent use. `sm` wraps that API into a single binary that any agent can call.
 
-Copy the binary to a directory in your PATH, e.g.:
+## Quick Start
 
-```bash
-sudo cp supermemory /usr/local/bin/
-```
-
-Or to your user bin:
+### Install
 
 ```bash
-mkdir -p ~/.local/bin
-cp supermemory ~/.local/bin/
+curl -sSL https://raw.githubusercontent.com/franksde/supermemory-cli/main/install.sh | bash
 ```
+
+Or build from source:
+
+```bash
+git clone https://github.com/franksde/supermemory-cli.git
+cd supermemory-cli
+go build -o sm .
+sudo mv sm /usr/local/bin/
+```
+
+### Configure
+
+```bash
+# Get your API key from https://console.supermemory.ai/keys
+sm config set-key sm_xxxxx
+
+# Set a default container tag (scopes your memories)
+sm config set-tag my-project
+```
+
+Or use environment variables:
+
+```bash
+export SUPERMEMORY_API_KEY="sm_xxxxx"
+export SUPERMEMORY_API_BASE="https://api.supermemory.ai"  # optional
+```
+
+### 30-Second Demo
+
+```bash
+sm add "This project uses Go with Cobra for CLI"
+sm add "Frank prefers minimal comments in code"
+sm search "project stack"
+sm list
+```
+
+## CLI Reference
+
+### Memory Operations (v4 API)
+
+| Command | Description |
+|---------|-------------|
+| `sm add <text\|->` | Add a memory (from args or stdin) |
+| `sm search <query>` | Search memories and documents |
+| `sm list` | List recent memories |
+| `sm forget <id\|content>` | Forget (soft delete) a memory |
+
+### Document Operations (v3 API)
+
+| Command | Description |
+|---------|-------------|
+| `sm doc add <file\|->` | Add a document |
+| `sm doc batch <manifest.json>` | Batch add documents |
+| `sm doc get <id>` | Get document by ID |
+| `sm doc delete <id>` | Delete document by ID |
+
+### Other Commands
+
+| Command | Description |
+|---------|-------------|
+| `sm conv ingest <file.json>` | Ingest a conversation |
+| `sm container get\|set\|merge\|delete` | Container tag management |
+| `sm config set-key <key>` | Set API key |
+| `sm config set-tag <tag>` | Set default container tag |
+| `sm config show` | Show current configuration |
+
+### Global Flags
+
+- `--containerTag` — Override the default container tag for any command
+- `--help` — Help for any command
 
 ## Configuration
 
-Set your API key via environment:
-
-```bash
-export SUPERMEMORY_API_KEY="sm_..."
-# Optional base URL (default: https://api.supermemory.ai)
-export SUPERMEMORY_API_BASE="https://api.supermemory.ai"
-```
-
-Or create a config file at `~/.config/supermemory/config.json`:
+Config file: `~/.config/sm/config.json`
 
 ```json
 {
-  "apiKey": "sm_...",
-  "apiBase": "https://api.supermemory.ai"
+  "api_key": "sm_xxxxx",
+  "base_url": "https://api.supermemory.ai",
+  "default_container_tag": "my-project"
 }
 ```
 
-## Commands
+Priority: environment variables > config file > defaults.
 
-- `supermemory doc add <file|-` — add a document (read from file or stdin)
-- `supermemory doc batch <manifest.json> [--dry-run]` — batch add (max 600 per request)
-- `supermemory conv ingest <conversation.json>` — ingest a conversation
-- `supermemory search docs <query> [--limit N] [--containerTag tag]` — search documents
-- `supermemory container get <tag>` — get container settings
-- `supermemory container set <tag> --settings key=value,...` — update settings
-- `supermemory container merge <sourceTag> <targetTag>` — merge containers
-- `supermemory container delete <tag>` — delete container
+Also reads legacy config from `~/.config/supermemory/config.json` for backward compatibility.
 
-All commands output JSON.
+## Agent Integration
 
-## Example: Batch manifest
+### Claude Code
 
-```json
-[
-  {
-    "content": "Markdown or plain text content",
-    "containerTag": "my-project",
-    "customId": "doc-001",
-    "metadata": { "source": "clipper" }
-  }
-]
-```
+Copy `skills/claude-code/SKILL.md` into your project or global skills directory. The skill teaches Claude Code when and how to use `sm` for persistent memory.
 
-## Notes
+### OpenAI Codex
 
-- Uses Cobra; `--help` for command flags.
-- Batch chunking is automatic; respects the 600 document limit.
-- Errors are printed to stderr; exit code 1 on failure.
+Copy `skills/codex/SKILL.md` to `~/.codex/skills/supermemory/`. Codex auto-discovers skills from that directory.
+
+### Any Agent
+
+All commands output JSON and use exit code 1 on failure — designed for machine consumption. Add `sm` to your agent's allowed tools and teach it:
+
+- `sm add "fact"` to store
+- `sm search "query"` to recall
+- `sm forget "outdated fact"` to remove
+
+## License
+
+MIT — see [LICENSE](LICENSE).
