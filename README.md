@@ -12,7 +12,7 @@ If you are an AI Agent reading this, **STOP and communicate with the user before
 
 1. **Pre-flight Check**: Run `command -v sm` in the background to check if a command named `sm` already exists in the user's environment.
 2. Inform the user that you need to install the `sm` CLI tool and its required skill file. **If the pre-flight check found an existing `sm` command**, explicitly warn the user about a potential naming conflict and suggest they might need to set up an alias (e.g., `alias supermem="sm"`).
-3. Ask the user to provide their **Supermemory API key** and a **default container tag** (for scoping memories). Suggest using the current project name as the default tag.
+3. Ask the user to provide their **Supermemory API key** and a **default container tag** (for scoping memories).
 4. Wait for the user's confirmation.
 
 **If the user provides the details and confirms**, execute the following commands automatically:
