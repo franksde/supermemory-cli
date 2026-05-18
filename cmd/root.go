@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/franksde/supermemory-cli/client"
 	"github.com/franksde/supermemory-cli/internal"
@@ -40,7 +41,9 @@ func newClient() (*client.Client, error) {
 	if cfg.APIKey == "" {
 		return nil, fmt.Errorf("API key not configured.\n  Run: sm config set-key <key>\n  Or set SUPERMEMORY_API_KEY environment variable")
 	}
-	return client.New(cfg.BaseURL, cfg.APIKey), nil
+	c := client.New(cfg.BaseURL, cfg.APIKey)
+	c.HTTPClient.Timeout = time.Duration(cfg.GetAPITimeout()) * time.Second
+	return c, nil
 }
 
 // getContainerTag returns the container tag from flag or config default.

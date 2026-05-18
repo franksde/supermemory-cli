@@ -77,6 +77,12 @@ If `sm` is not installed or configured:
 curl -sSL https://raw.githubusercontent.com/franksde/supermemory-cli/main/install.sh | bash
 sm config set-key <api-key>          # Get key from https://console.supermemory.ai/keys
 sm config set-tag <default-container-tag>
+
+# Optional recommended Agent configurations
+sm config set-default-limit 3
+sm config set-score-threshold 0.5
+sm config set-max-content-length 500
+sm config set-default-v4 true
 ```
 
 ## Notes
@@ -84,5 +90,5 @@ sm config set-tag <default-container-tag>
 - All commands output JSON (agent-friendly)
 - `--containerTag` scopes memories; set a default with `sm config set-tag`. If omitted, the platform's default container is used.
 - `sm add` uses the v4 memories API (immediate, no ingestion delay)
-- `sm search` defaults to v3 document search; use `--v4` for memory search
+- `sm search` uses `default_v4` flag (default true), or use `--v4=false` to use v3 API.
 - Config file: `~/.config/sm/config.json`

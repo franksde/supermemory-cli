@@ -9,9 +9,49 @@ import (
 
 // Config holds the CLI configuration.
 type Config struct {
-	APIKey              string `json:"api_key,omitempty"`
-	BaseURL             string `json:"base_url,omitempty"`
-	DefaultContainerTag string `json:"default_container_tag,omitempty"`
+	APIKey              string   `json:"api_key,omitempty"`
+	BaseURL             string   `json:"base_url,omitempty"`
+	DefaultContainerTag string   `json:"default_container_tag,omitempty"`
+	DefaultLimit        *int     `json:"default_limit,omitempty"`
+	ScoreThreshold      *float64 `json:"score_threshold,omitempty"`
+	MaxContentLength    *int     `json:"max_content_length,omitempty"`
+	APITimeout          *int     `json:"api_timeout,omitempty"`
+	DefaultV4           *bool    `json:"default_v4,omitempty"`
+}
+
+func (c *Config) GetDefaultLimit() int {
+	if c.DefaultLimit != nil {
+		return *c.DefaultLimit
+	}
+	return 3
+}
+
+func (c *Config) GetScoreThreshold() float64 {
+	if c.ScoreThreshold != nil {
+		return *c.ScoreThreshold
+	}
+	return 0.0
+}
+
+func (c *Config) GetMaxContentLength() int {
+	if c.MaxContentLength != nil {
+		return *c.MaxContentLength
+	}
+	return 800
+}
+
+func (c *Config) GetAPITimeout() int {
+	if c.APITimeout != nil {
+		return *c.APITimeout
+	}
+	return 5
+}
+
+func (c *Config) GetDefaultV4() bool {
+	if c.DefaultV4 != nil {
+		return *c.DefaultV4
+	}
+	return true
 }
 
 const DefaultBaseURL = "https://api.supermemory.ai"

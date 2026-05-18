@@ -112,6 +112,11 @@ sm list
 | `sm container get\|set\|merge\|delete` | Container tag management |
 | `sm config set-key <key>` | Set API key |
 | `sm config set-tag <tag>` | Set default container tag |
+| `sm config set-default-limit <int>` | Set default search limit |
+| `sm config set-score-threshold <float>` | Set minimum relevance score (0.0-1.0) |
+| `sm config set-max-content-length <int>` | Set max chars for search results |
+| `sm config set-api-timeout <int>` | Set API timeout in seconds |
+| `sm config set-default-v4 <bool>` | Set default use of v4 search |
 | `sm config show` | Show current configuration |
 
 ### Global Flags
@@ -127,7 +132,12 @@ Config file: `~/.config/sm/config.json`
 {
   "api_key": "sm_xxxxx",
   "base_url": "https://api.supermemory.ai",
-  "default_container_tag": "my-project"
+  "default_container_tag": "my-project",
+  "default_limit": 3,
+  "score_threshold": 0.0,
+  "max_content_length": 800,
+  "api_timeout": 5,
+  "default_v4": true
 }
 ```
 
