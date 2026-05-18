@@ -7,19 +7,6 @@ description: "Use when you need to store, search, or manage memories across sess
 
 `sm` is a lightweight CLI that gives any AI agent (Claude Code, Codex, Gemini CLI, etc.) persistent memory across sessions, powered by the [Supermemory](https://supermemory.ai) API free tier.
 
-## Relationship to Official Supermemory Integrations
-
-Supermemory offers several official integration options:
-
-| Integration | Type | Requires Pro? |
-|-------------|------|--------------|
-| [Supermemory MCP Server](https://docs.supermemory.ai/docs/supermemory-mcp/mcp) | MCP protocol | Yes |
-| [claude-supermemory](https://github.com/supermemoryai/claude-supermemory) | Claude Code plugin (auto-capture) | Yes |
-| [codex-supermemory](https://github.com/supermemoryai/codex-supermemory) | Codex hooks + skills (auto-capture) | Yes |
-| **`sm` CLI (this tool)** | **Universal CLI (explicit read/write)** | **No — free tier** |
-
-`sm` is the free, explicit-control alternative. Instead of auto-capturing tool usage, the agent decides what to store and when to recall. This works with any agent that can run shell commands.
-
 ## When to Use
 
 - **Store**: When the user shares preferences, project facts, or decisions worth remembering
