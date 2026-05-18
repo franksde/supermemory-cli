@@ -1,16 +1,30 @@
 ---
 name: supermemory
-description: "Use when you need to store, search, or manage memories across sessions. Provides persistent memory for AI coding agents via the Supermemory API."
+description: "Use when you need to store, search, or manage memories across sessions. Provides persistent memory for AI agents via the Supermemory API."
 ---
 
 # Supermemory — Persistent Memory for AI Agents
 
-Store facts, preferences, and project knowledge that persist across sessions.
+`sm` is a lightweight CLI that gives any AI agent (Claude Code, Codex, Gemini CLI, etc.) persistent memory across sessions, powered by the [Supermemory](https://supermemory.ai) API free tier.
+
+## Relationship to Official Supermemory Integrations
+
+Supermemory offers several official integration options:
+
+| Integration | Type | Requires Pro? |
+|-------------|------|--------------|
+| [Supermemory MCP Server](https://docs.supermemory.ai/docs/supermemory-mcp/mcp) | MCP protocol | Yes |
+| [claude-supermemory](https://github.com/supermemoryai/claude-supermemory) | Claude Code plugin (auto-capture) | Yes |
+| [codex-supermemory](https://github.com/supermemoryai/codex-supermemory) | Codex hooks + skills (auto-capture) | Yes |
+| **`sm` CLI (this tool)** | **Universal CLI (explicit read/write)** | **No — free tier** |
+
+`sm` is the free, explicit-control alternative. Instead of auto-capturing tool usage, the agent decides what to store and when to recall. This works with any agent that can run shell commands.
 
 ## When to Use
 
 - **Store**: When the user shares preferences, project facts, or decisions worth remembering
 - **Search**: When you need context from previous sessions (e.g., "what stack does this project use?")
+- **List**: When you want to see all stored memories for a project
 - **Forget**: When information becomes outdated or incorrect
 
 ## Commands
@@ -74,7 +88,7 @@ sm add "User wants minimal comments, self-documenting code"
 If `sm` is not installed or configured:
 ```bash
 curl -sSL https://raw.githubusercontent.com/franksde/supermemory-cli/main/install.sh | bash
-sm config set-key <api-key>
+sm config set-key <api-key>          # Get key from https://console.supermemory.ai/keys
 sm config set-tag <default-container-tag>
 ```
 
@@ -82,5 +96,6 @@ sm config set-tag <default-container-tag>
 
 - All commands output JSON (agent-friendly)
 - `--containerTag` scopes memories; set a default with `sm config set-tag`
-- The `sm add` command uses the v4 memories API (immediate, no ingestion delay)
-- The `sm search` command defaults to v3 document search; use `--v4` for memory search
+- `sm add` uses the v4 memories API (immediate, no ingestion delay)
+- `sm search` defaults to v3 document search; use `--v4` for memory search
+- Config file: `~/.config/sm/config.json`
