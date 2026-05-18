@@ -8,24 +8,33 @@ Designed for speed, token efficiency, and universal compatibility across all AI 
 
 ## 🤖 For AI Agents (Self-Installation)
 
-If you are an AI Agent reading this, you can install the CLI and its required skill file automatically by running:
+If you are an AI Agent reading this, **STOP and communicate with the user before proceeding**.
+
+1. Inform the user that you need to install the `sm` CLI tool and its required skill file.
+2. Ask the user to provide their **Supermemory API key** and a **default container tag** (for scoping memories). If they don't provide a container tag, suggest using a default one (e.g., the current project name).
+3. Wait for the user's confirmation.
+
+**If the user provides the details and confirms**, execute the following commands automatically:
 
 ```bash
 # 1. Install the binary
 curl -sSL https://raw.githubusercontent.com/franksde/supermemory-cli/main/install.sh | bash
 
-# 2. Configure the API key (Ask the user if you don't have one)
-sm config set-key <api-key>
+# 2. Configure the API key and container tag
+sm config set-key <api-key-from-user>
+sm config set-tag <container-tag-from-user>
 
-# 3. Download the universal SKILL.md to your active workspace or skills directory
+# 3. Download the universal SKILL.md to the active workspace or skills directory
 curl -sSL https://raw.githubusercontent.com/franksde/supermemory-cli/main/skills/SKILL.md -o supermemory_skill.md
 ```
+
+**If the user prefers to do it manually**, instruct them to run the commands above themselves.
 
 ## Why `sm`?
 
 When integrating persistent memory into autonomous workflows, you need a tool that is:
-1. **Extremely Fast**: Zero startup time, direct Go binary execution.
-2. **Token Efficient**: JSON-only output tailored for LLMs. No bloated CLI UI.
+1. **Extremely Fast (vs MCP)**: Zero startup time, direct Go binary execution. Much faster than connecting to and maintaining an MCP server.
+2. **Token Efficient (vs MCP)**: MCP protocols often require heavy JSON-RPC payloads and complex schemas. `sm` uses minimal JSON-only output tailored specifically for LLM context windows, saving precious tokens on every read/write.
 3. **Explicit Control**: The agent explicitly decides what to store and when to recall, keeping context windows clean instead of auto-capturing everything.
 4. **Universal**: Works with *any* agent that can execute shell commands.
 
