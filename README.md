@@ -2,13 +2,34 @@
 
 > Forked from [shaoyanji/supermemory-cli](https://github.com/shaoyanji/supermemory-cli)
 
-Give your AI agents (Claude Code, Codex, Gemini CLI, etc.) free, persistent memory across sessions — powered by the [Supermemory](https://supermemory.ai) API.
+Give your AI agents (Claude Code, Codex, Gemini CLI, etc.) persistent memory across sessions — powered by the [Supermemory](https://supermemory.ai) API. 
 
-## Why?
+Designed for speed, token efficiency, and universal compatibility across all AI Agent environments.
 
-The official Supermemory plugins require a **Pro plan**. The API free tier is generous enough for personal agent use. `sm` wraps that API into a single binary that any agent can call.
+## 🤖 For AI Agents (Self-Installation)
 
-## Quick Start
+If you are an AI Agent reading this, you can install the CLI and its required skill file automatically by running:
+
+```bash
+# 1. Install the binary
+curl -sSL https://raw.githubusercontent.com/franksde/supermemory-cli/main/install.sh | bash
+
+# 2. Configure the API key (Ask the user if you don't have one)
+sm config set-key <api-key>
+
+# 3. Download the universal SKILL.md to your active workspace or skills directory
+curl -sSL https://raw.githubusercontent.com/franksde/supermemory-cli/main/skills/SKILL.md -o supermemory_skill.md
+```
+
+## Why `sm`?
+
+When integrating persistent memory into autonomous workflows, you need a tool that is:
+1. **Extremely Fast**: Zero startup time, direct Go binary execution.
+2. **Token Efficient**: JSON-only output tailored for LLMs. No bloated CLI UI.
+3. **Explicit Control**: The agent explicitly decides what to store and when to recall, keeping context windows clean instead of auto-capturing everything.
+4. **Universal**: Works with *any* agent that can execute shell commands.
+
+## Quick Start (For Humans)
 
 ### Install
 
@@ -104,21 +125,11 @@ Also reads legacy config from `~/.config/supermemory/config.json` for backward c
 
 ## Agent Integration
 
-### Claude Code
+`sm` provides a universal `SKILL.md` file located at `skills/SKILL.md`.
 
-Copy `skills/claude-code/SKILL.md` into your project or global skills directory. The skill teaches Claude Code when and how to use `sm` for persistent memory.
+This single skill file works for **any** agent (Claude Code, Codex, Gemini, etc.). It teaches the agent when to store memories, how to search for context at the start of a session, and how to manage the API.
 
-### OpenAI Codex
-
-Copy `skills/codex/SKILL.md` to `~/.codex/skills/supermemory/`. Codex auto-discovers skills from that directory.
-
-### Any Agent
-
-All commands output JSON and use exit code 1 on failure — designed for machine consumption. Add `sm` to your agent's allowed tools and teach it:
-
-- `sm add "fact"` to store
-- `sm search "query"` to recall
-- `sm forget "outdated fact"` to remove
+Just provide the `skills/SKILL.md` to your agent, ensure `sm` is in the PATH, and the agent will handle the rest. All commands output JSON and use standard exit codes for machine consumption.
 
 ## License
 
