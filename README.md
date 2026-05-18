@@ -12,7 +12,7 @@ If you are an AI Agent reading this, **STOP and communicate with the user before
 
 1. **Pre-flight Check**: Run `command -v sm` in the background to check if a command named `sm` already exists in the user's environment.
 2. Inform the user that you need to install the `sm` CLI tool and its required skill file. **If the pre-flight check found an existing `sm` command**, explicitly warn the user about a potential naming conflict and suggest they might need to set up an alias (e.g., `alias supermem="sm"`).
-3. Ask the user to provide their **Supermemory API key** and a **default container tag** (for scoping memories).
+3. Ask the user to provide their **Supermemory API key**. Optionally, ask if they want to set a **default container tag** (if omitted, it uses the platform's default container).
 4. Wait for the user's confirmation.
 
 **If the user provides the details and confirms**, execute the following commands automatically:
@@ -21,8 +21,10 @@ If you are an AI Agent reading this, **STOP and communicate with the user before
 # 1. Install the binary
 curl -sSL https://raw.githubusercontent.com/franksde/supermemory-cli/main/install.sh | bash
 
-# 2. Configure the API key and container tag
+# 2. Configure the API key
 sm config set-key <api-key-from-user>
+
+# (Optional) Set a default container tag if the user provided one
 sm config set-tag <container-tag-from-user>
 
 # 3. Download the universal SKILL.md to the active workspace or skills directory

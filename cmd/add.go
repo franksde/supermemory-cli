@@ -42,9 +42,6 @@ Examples:
 		}
 
 		containerTag := getContainerTag(cmd)
-		if containerTag == "" {
-			return fmt.Errorf("container tag required. Use --containerTag or set default: sm config set-tag <tag>")
-		}
 
 		memory := map[string]interface{}{"content": content}
 
@@ -55,8 +52,10 @@ Examples:
 		}
 
 		payload := map[string]interface{}{
-			"memories":     []interface{}{memory},
-			"containerTag": containerTag,
+			"memories": []interface{}{memory},
+		}
+		if containerTag != "" {
+			payload["containerTag"] = containerTag
 		}
 
 		resp, err := c.Post("/v4/memories", payload)

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -24,12 +23,9 @@ Examples:
 		}
 
 		containerTag := getContainerTag(cmd)
-		if containerTag == "" {
-			return fmt.Errorf("container tag required. Use --containerTag or set default: sm config set-tag <tag>")
-		}
-
-		payload := map[string]interface{}{
-			"containerTags": []string{containerTag},
+		payload := map[string]interface{}{}
+		if containerTag != "" {
+			payload["containerTags"] = []string{containerTag}
 		}
 
 		resp, err := c.Post("/v4/memories/list", payload)

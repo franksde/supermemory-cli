@@ -23,12 +23,9 @@ Examples:
 		}
 
 		containerTag := getContainerTag(cmd)
-		if containerTag == "" {
-			return fmt.Errorf("container tag required. Use --containerTag or set default: sm config set-tag <tag>")
-		}
-
-		payload := map[string]interface{}{
-			"containerTag": containerTag,
+		payload := map[string]interface{}{}
+		if containerTag != "" {
+			payload["containerTag"] = containerTag
 		}
 
 		// If it looks like a memory ID (starts with "mem_"), use id field

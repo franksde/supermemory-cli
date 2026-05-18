@@ -82,7 +82,7 @@ sm config set-tag <default-container-tag>
 ## Notes
 
 - All commands output JSON (agent-friendly)
-- `--containerTag` scopes memories; set a default with `sm config set-tag`
+- `--containerTag` scopes memories; set a default with `sm config set-tag`. If omitted, the platform's default container is used.
 - `sm add` uses the v4 memories API (immediate, no ingestion delay)
 - `sm search` defaults to v3 document search; use `--v4` for memory search
 - Config file: `~/.config/sm/config.json`
