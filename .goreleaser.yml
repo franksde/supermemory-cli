@@ -5,6 +5,9 @@ builds:
   - binary: sm
     env:
       - CGO_ENABLED=0
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
     goos:
       - darwin
       - linux
@@ -27,6 +30,9 @@ archives:
 
 checksum:
   name_template: "checksums.txt"
+
+gomod:
+  proxy: true
 
 release:
   github:

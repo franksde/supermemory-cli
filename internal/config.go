@@ -70,6 +70,7 @@ func LoadConfig() *Config {
 	// Try legacy config first (~/.config/supermemory/config.json)
 	home, _ := os.UserHomeDir()
 	legacyPath := filepath.Join(home, ".config", "supermemory", "config.json")
+	// #nosec G304 -- legacy path is a fixed config location under the current user's home directory.
 	if data, err := os.ReadFile(legacyPath); err == nil {
 		var legacy struct {
 			APIKey  string `json:"apiKey"`
@@ -87,7 +88,10 @@ func LoadConfig() *Config {
 
 	// New config overrides legacy
 	if data, err := os.ReadFile(ConfigPath()); err == nil {
-		json.Unmarshal(data, cfg)
+		var fileCfg Config
+		if err := json.Unmarshal(data, &fileCfg); err == nil {
+			cfg = &fileCfg
+		}
 	}
 
 	// Environment variables override everything
@@ -108,10 +112,10 @@ func LoadConfig() *Config {
 // SaveConfig writes the config to ~/.config/sm/config.json.
 func SaveConfig(cfg *Config) error {
 	path := ConfigPath()
-	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
 		return fmt.Errorf("failed to create config directory: %w", err)
 	}
-	data, err := json.MarshalIndent(cfg, "", "  ")
+	data, err := json.MarshalIndent(cfg, "", "  ") // #nosec G117 -- API keys are intentionally stored in the user's 0600 config file.
 	if err != nil {
 		return fmt.Errorf("failed to marshal config: %w", err)
 	}
@@ -122,7 +126,9 @@ func SaveConfig(cfg *Config) error {
 func ReadConfigFile() *Config {
 	cfg := &Config{}
 	if data, err := os.ReadFile(ConfigPath()); err == nil {
-		json.Unmarshal(data, cfg)
+		if err := json.Unmarshal(data, cfg); err != nil {
+			return &Config{}
+		}
 	}
 	return cfg
 }

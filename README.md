@@ -91,7 +91,7 @@ sm list
 | Command | Description |
 |---------|-------------|
 | `sm add <text\|->` | Add a memory (from args or stdin) |
-| `sm search <query>` | Search memories and documents |
+| `sm search <query>` | Search memories with v4 by default |
 | `sm list` | List recent memories |
 | `sm forget <id\|content>` | Forget (soft delete) a memory |
 
@@ -103,6 +103,7 @@ sm list
 | `sm doc batch <manifest.json>` | Batch add documents |
 | `sm doc get <id>` | Get document by ID |
 | `sm doc delete <id>` | Delete document by ID |
+| `sm search docs <query>` | Search legacy documents with v3 |
 
 ### Other Commands
 

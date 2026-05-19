@@ -78,6 +78,9 @@ func maskKey(key string) string {
 	if key == "" {
 		return "(not set)"
 	}
+	if len(key) == 1 {
+		return "***"
+	}
 	if len(key) <= 8 {
 		return key[:2] + "***"
 	}
@@ -104,6 +107,9 @@ var configSetDefaultLimitCmd = &cobra.Command{
 		if err != nil {
 			return fmt.Errorf("invalid integer for limit: %w", err)
 		}
+		if val <= 0 {
+			return fmt.Errorf("default_limit must be greater than 0")
+		}
 		cfg := internal.ReadConfigFile()
 		cfg.DefaultLimit = &val
 		if err := internal.SaveConfig(cfg); err != nil {
@@ -122,6 +128,9 @@ var configSetScoreThresholdCmd = &cobra.Command{
 		val, err := strconv.ParseFloat(args[0], 64)
 		if err != nil {
 			return fmt.Errorf("invalid float for threshold: %w", err)
+		}
+		if val < 0 || val > 1 {
+			return fmt.Errorf("score_threshold must be between 0.0 and 1.0")
 		}
 		cfg := internal.ReadConfigFile()
 		cfg.ScoreThreshold = &val
@@ -142,6 +151,9 @@ var configSetMaxContentLengthCmd = &cobra.Command{
 		if err != nil {
 			return fmt.Errorf("invalid integer for length: %w", err)
 		}
+		if val < 0 {
+			return fmt.Errorf("max_content_length must be greater than or equal to 0")
+		}
 		cfg := internal.ReadConfigFile()
 		cfg.MaxContentLength = &val
 		if err := internal.SaveConfig(cfg); err != nil {
@@ -160,6 +172,9 @@ var configSetApiTimeoutCmd = &cobra.Command{
 		val, err := strconv.Atoi(args[0])
 		if err != nil {
 			return fmt.Errorf("invalid integer for timeout: %w", err)
+		}
+		if val <= 0 {
+			return fmt.Errorf("api_timeout must be greater than 0")
 		}
 		cfg := internal.ReadConfigFile()
 		cfg.APITimeout = &val

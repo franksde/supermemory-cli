@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -21,7 +22,7 @@ var containerGetCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		resp, err := c.Get("/v3/container-tags/" + args[0])
+		resp, err := c.Get("/v3/container-tags/" + url.PathEscape(args[0]))
 		if err != nil {
 			return err
 		}
@@ -53,7 +54,7 @@ var containerSetCmd = &cobra.Command{
 			settings[kv[0]] = kv[1]
 		}
 		payload := map[string]interface{}{"settings": settings}
-		resp, err := c.Patch("/v3/container-tags/"+args[0], payload)
+		resp, err := c.Patch("/v3/container-tags/"+url.PathEscape(args[0]), payload)
 		if err != nil {
 			return err
 		}
@@ -93,7 +94,7 @@ var containerDeleteCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		resp, err := c.Delete("/v3/container-tags/" + args[0])
+		resp, err := c.Delete("/v3/container-tags/" + url.PathEscape(args[0]))
 		if err != nil {
 			return err
 		}

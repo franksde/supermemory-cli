@@ -35,12 +35,41 @@ TARBALL="${BINARY}_${LATEST#v}_${OS}_${ARCH}.tar.gz"
 URL="https://github.com/${REPO}/releases/download/${LATEST}/${TARBALL}"
 
 TMPDIR=$(mktemp -d)
-trap "rm -rf $TMPDIR" EXIT
+trap 'rm -rf "$TMPDIR"' EXIT
 
 curl -fsSL "$URL" -o "${TMPDIR}/${TARBALL}"
+curl -fsSL "https://github.com/${REPO}/releases/download/${LATEST}/checksums.txt" -o "${TMPDIR}/checksums.txt"
+
+EXPECTED=$(awk -v file="$TARBALL" '$2 == file {print $1}' "${TMPDIR}/checksums.txt")
+if [ -z "$EXPECTED" ]; then
+  echo "Checksum for ${TARBALL} not found"
+  exit 1
+fi
+
+if command -v sha256sum >/dev/null 2>&1; then
+  ACTUAL=$(sha256sum "${TMPDIR}/${TARBALL}" | awk '{print $1}')
+elif command -v shasum >/dev/null 2>&1; then
+  ACTUAL=$(shasum -a 256 "${TMPDIR}/${TARBALL}" | awk '{print $1}')
+else
+  echo "No SHA-256 checksum tool found (need sha256sum or shasum)"
+  exit 1
+fi
+
+if [ "$ACTUAL" != "$EXPECTED" ]; then
+  echo "Checksum verification failed for ${TARBALL}"
+  exit 1
+fi
+
 tar xzf "${TMPDIR}/${TARBALL}" -C "$TMPDIR"
 
 # Install
+if [ ! -d "$INSTALL_DIR" ]; then
+  if ! mkdir -p "$INSTALL_DIR" 2>/dev/null; then
+    echo "Need sudo to create ${INSTALL_DIR}"
+    sudo mkdir -p "$INSTALL_DIR"
+  fi
+fi
+
 if [ -w "$INSTALL_DIR" ]; then
   mv "${TMPDIR}/${BINARY}" "${INSTALL_DIR}/${BINARY}"
 else

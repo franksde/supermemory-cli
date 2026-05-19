@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
 
@@ -36,7 +37,7 @@ func filterResults(out interface{}, scoreThreshold float64, maxLen int) {
 		if !ok {
 			continue
 		}
-		
+
 		var score float64
 		if simVal, ok := res["similarity"].(float64); ok {
 			score = simVal
@@ -72,7 +73,7 @@ var searchCmd = &cobra.Command{
 	Use:   "search <query>",
 	Short: "Search memories and documents",
 	Long: `Search Supermemory using semantic search.
-Defaults to v3 document search. Use --v4 for memory search (lower latency).
+Defaults to v4 memory search. Use "sm search docs" for legacy document search.
 
 Examples:
   sm search "React authentication patterns"
@@ -85,6 +86,7 @@ Examples:
 var searchDocsCmd = &cobra.Command{
 	Use:   "docs <query>",
 	Short: "Search documents (backward-compatible alias)",
+	Long:  `Search legacy documents through the v3 search API.`,
 	Args:  cobra.MinimumNArgs(1),
 	RunE:  runSearch,
 }
@@ -104,9 +106,11 @@ func runSearch(cmd *cobra.Command, args []string) error {
 
 	containerTag := getContainerTag(cmd)
 	chunkThresh, _ := cmd.Flags().GetFloat64("chunkThreshold")
-	
+
 	useV4 := cfg.GetDefaultV4()
-	if cmd.Flags().Changed("v4") {
+	if cmd.Name() == "docs" {
+		useV4 = false
+	} else if cmd.Flags().Changed("v4") {
 		useV4, _ = cmd.Flags().GetBool("v4")
 	}
 
@@ -132,7 +136,9 @@ func runSearch(cmd *cobra.Command, args []string) error {
 	}
 
 	var out interface{}
-	json.Unmarshal(resp, &out)
+	if err := json.Unmarshal(resp, &out); err != nil {
+		return fmt.Errorf("invalid JSON response: %w", err)
+	}
 
 	filterResults(out, cfg.GetScoreThreshold(), cfg.GetMaxContentLength())
 

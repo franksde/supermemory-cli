@@ -1,6 +1,9 @@
 # Binary
 sm
 sm.exe
+dist/
+coverage.out
+.codegraph/
 
 # IDE
 .idea/

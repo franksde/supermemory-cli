@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"time"
 
@@ -127,12 +128,14 @@ var docGetCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		resp, err := c.Get("/v3/documents/" + args[0])
+		resp, err := c.Get("/v3/documents/" + url.PathEscape(args[0]))
 		if err != nil {
 			return err
 		}
 		var out interface{}
-		json.Unmarshal(resp, &out)
+		if err := json.Unmarshal(resp, &out); err != nil {
+			return fmt.Errorf("invalid JSON response: %w", err)
+		}
 		enc := json.NewEncoder(os.Stdout)
 		enc.SetIndent("", "  ")
 		return enc.Encode(out)
@@ -148,7 +151,7 @@ var docDeleteCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		_, err = c.Delete("/v3/documents/" + args[0])
+		_, err = c.Delete("/v3/documents/" + url.PathEscape(args[0]))
 		if err != nil {
 			return err
 		}

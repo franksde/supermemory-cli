@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -34,7 +35,9 @@ Examples:
 		}
 
 		var out interface{}
-		json.Unmarshal(resp, &out)
+		if err := json.Unmarshal(resp, &out); err != nil {
+			return fmt.Errorf("invalid JSON response: %w", err)
+		}
 		enc := json.NewEncoder(os.Stdout)
 		enc.SetIndent("", "  ")
 		return enc.Encode(out)
